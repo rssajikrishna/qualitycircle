@@ -107,13 +107,16 @@ const DeliveryPage = () => {
   const navigate = useNavigate();
   const { shift: paramShift, dept: paramDept } = useRParams();
   const user = JSON.parse(localStorage.getItem('userInfo') || 'null');
-  const isEmployee = user?.role === 'employee';
-  const isHOD = user?.role === 'hod';
-  const canEdit = !isEmployee && !isHOD;
+  const isSuperAdmin = user?.role === 'superadmin';
+  const isSupervisor = user?.role === 'supervisor';
   const reportRef = useRef(null);
 
   const activeShift = paramShift || user?.shift || '1';
   const activeDept = paramDept || 'fg';
+
+  const userDepts = (user?.department || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const isAssignedDept = isSuperAdmin || userDepts.includes(activeDept.toLowerCase());
+  const canEdit = (isSupervisor && isAssignedDept) || isSuperAdmin;
   const deptLabels = DEPT_DELIVERY_LABELS[activeDept] || DEPT_DELIVERY_LABELS.fg;
 
   // --- State ---

@@ -42,7 +42,9 @@ const QualityPage = () => {
 
   const isSuperAdmin = user?.role === 'superadmin';
   const isSupervisor = user?.role === 'supervisor';
-  const canUpdate = isSupervisor || isSuperAdmin;
+  const userDepts = (user?.department || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const isAssignedDept = isSuperAdmin || userDepts.includes((dept || '').toLowerCase());
+  const canUpdate = (isSupervisor && isAssignedDept) || isSuperAdmin;
 
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState(initialData);

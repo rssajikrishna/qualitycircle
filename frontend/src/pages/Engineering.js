@@ -93,7 +93,8 @@ export default function Engineering() {
   const user      = JSON.parse(localStorage.getItem('userInfo') || 'null');
   const isSupervisor = user?.role === 'supervisor';
   const isSuperAdmin = user?.role === 'superadmin';
-  const canEdit    = isSupervisor || isSuperAdmin;
+  const userDepts  = (user?.department || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const canEdit    = (isSupervisor && userDepts.includes('engineering')) || isSuperAdmin;
   const today     = new Date().toISOString().split('T')[0];
 
   const [shift,   setShift]   = useState('1');
@@ -210,7 +211,9 @@ export default function Engineering() {
               </span>
             )}
             <input type="date" value={date} onChange={e => setDate(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 focus:outline-none focus:border-sky-500"
+              readOnly={isSupervisor} disabled={isSupervisor}
+              max={isSupervisor ? today : undefined}
+              className={`px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 focus:outline-none focus:border-sky-500 ${isSupervisor ? 'opacity-60 cursor-not-allowed bg-slate-50' : ''}`}
             />
             <input type="text" placeholder="Employee ID" value={empId} onChange={e => setEmpId(e.target.value)}
               readOnly={!canEdit} disabled={!canEdit}

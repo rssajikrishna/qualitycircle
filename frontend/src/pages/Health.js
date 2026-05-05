@@ -18,7 +18,9 @@ const Health = () => {
   const isSuperAdmin = user.role === 'superadmin';
   const isHOD        = user.role === 'hod';
   const isSupervisor = user.role === 'supervisor';
-  const canUpdate    = isSupervisor || isSuperAdmin;
+  const userDepts    = (user.department || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const isAssignedDept = isSuperAdmin || userDepts.includes((dept || '').toLowerCase());
+  const canUpdate    = (isSupervisor && isAssignedDept) || isSuperAdmin;
   const reportRef    = useRef(null);
 
   const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
