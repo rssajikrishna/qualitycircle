@@ -284,7 +284,7 @@ const DeliveryPage = () => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     fetchMetrics();
     return () => clearInterval(timer);
-  }, [activeShift, activeDept, fetchMetrics]);
+  }, [activeShift, activeDept]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dynamicDaysData = useMemo(() => {
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
