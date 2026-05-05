@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
+const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +17,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', { 
+      const res = await axios.post(`${API}/api/users/login`, {
         gmail: email, 
         password: password 
       });
@@ -34,7 +36,7 @@ const LoginPage = () => {
 
       // Log the login event (excluding superadmin)
       if (res.data.role !== 'superadmin') {
-        fetch('http://localhost:5000/api/loginlog', {
+        fetch(`${API}/api/loginlog`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -88,12 +90,15 @@ const LoginPage = () => {
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="relative">
             <Mail className="absolute left-4 top-4 text-emerald-600" size={18} />
-            <input 
-              type="email" 
-              placeholder="Email Address" 
+            <input
+              type="email"
+              placeholder="Email Address"
               className="w-full pl-12 pr-4 py-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.trim())}
               value={email}
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="email"
               required
             />
           </div>
@@ -106,6 +111,9 @@ const LoginPage = () => {
               className="w-full pl-12 pr-12 py-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="current-password"
               required
             />
             <button
